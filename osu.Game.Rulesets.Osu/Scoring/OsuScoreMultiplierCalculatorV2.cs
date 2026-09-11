@@ -145,6 +145,9 @@ namespace osu.Game.Rulesets.Osu.Scoring
             if (hidden.OnlyFadeApproachCircles.Value)
                 value -= 0.02;
 
+            if (hidden.LegacySliderFade.Value)
+                value -= 0.02;
+
             if (otherModsProvideTimingInfo)
                 value -= 0.02;
 

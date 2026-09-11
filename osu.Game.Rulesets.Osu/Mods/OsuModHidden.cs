@@ -23,6 +23,25 @@ namespace osu.Game.Rulesets.Osu.Mods
         [SettingSource("Only fade approach circles", "The main object body will not fade when enabled.")]
         public Bindable<bool> OnlyFadeApproachCircles { get; } = new BindableBool();
 
+        [SettingSource("Classic sliders fade", "...remember good old days?")]
+        public Bindable<bool> LegacySliderFade { get; } = new BindableBool();
+
+        public OsuModHidden()
+        {
+            OnlyFadeApproachCircles.ValueChanged += bind =>
+            {
+                if (bind.NewValue && LegacySliderFade.Value)
+                {
+                    LegacySliderFade.Value = false;
+                }
+
+                if (bind.NewValue && OnlyFadeApproachCircles.Value)
+                {
+                    OnlyFadeApproachCircles.Value = false;
+                }
+            };
+        }
+
         public override LocalisableString Description => @"Play with no approach circles and fading circles/sliders.";
 
         public override Type[] IncompatibleMods => new[] { typeof(IRequiresApproachCircles), typeof(OsuModSpinIn), typeof(OsuModDepth), typeof(OsuModFreezeFrame) };
@@ -89,10 +108,18 @@ namespace osu.Game.Rulesets.Osu.Mods
 
             switch (drawableObject)
             {
-                case DrawableSliderTail:
-                    using (drawableObject.BeginAbsoluteSequence(fadeStartTime))
+                case DrawableSliderHead: //temporary tweak until it will be correctly tweaked into objects code
+                    if (LegacySliderFade.Value)
+                        return;
+                    else using (drawableObject.BeginAbsoluteSequence(fadeStartTime))
                         drawableObject.FadeOut(fadeDuration);
+                    break;
 
+                case DrawableSliderTail:
+                    if (LegacySliderFade.Value)
+                        return;
+                    else using (drawableObject.BeginAbsoluteSequence(fadeStartTime))
+                        drawableObject.FadeOut(fadeDuration);
                     break;
 
                 case DrawableSliderRepeat sliderRepeat:
@@ -102,7 +129,6 @@ namespace osu.Game.Rulesets.Osu.Mods
 
                     using (drawableObject.BeginAbsoluteSequence(drawableObject.HitStateUpdateTime))
                         sliderRepeat.FadeOut();
-
                     break;
 
                 case DrawableHitCircle circle:
@@ -119,15 +145,17 @@ namespace osu.Game.Rulesets.Osu.Mods
                     break;
 
                 case DrawableSlider slider:
-                    using (slider.BeginAbsoluteSequence(fadeStartTime))
+                    if (LegacySliderFade.Value)
+                        return;
+                    else using (slider.BeginAbsoluteSequence(fadeStartTime))
                         slider.Body.FadeOut(fadeDuration, Easing.Out);
-
                     break;
 
                 case DrawableSliderTick sliderTick:
-                    using (sliderTick.BeginAbsoluteSequence(fadeStartTime))
+                    if (LegacySliderFade.Value)
+                        return;
+                    else using (sliderTick.BeginAbsoluteSequence(fadeStartTime))
                         sliderTick.FadeOut(fadeDuration);
-
                     break;
 
                 case DrawableSpinner spinner:
@@ -136,7 +164,6 @@ namespace osu.Game.Rulesets.Osu.Mods
 
                     using (spinner.BeginAbsoluteSequence(fadeStartTime))
                         spinner.FadeOut(fadeDuration);
-
                     break;
             }
         }
