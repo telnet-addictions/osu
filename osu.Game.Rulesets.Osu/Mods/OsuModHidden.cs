@@ -34,7 +34,10 @@ namespace osu.Game.Rulesets.Osu.Mods
                 {
                     LegacySliderFade.Value = false;
                 }
+            };
 
+            LegacySliderFade.ValueChanged += bind =>
+            {
                 if (bind.NewValue && OnlyFadeApproachCircles.Value)
                 {
                     OnlyFadeApproachCircles.Value = false;
