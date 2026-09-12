@@ -15,6 +15,7 @@ using osu.Game.Rulesets.Osu.Skinning.Default;
 using osu.Game.Skinning;
 using osuTK;
 using osuTK.Graphics;
+using osu.Game.Rulesets.Osu.Mods;
 
 namespace osu.Game.Rulesets.Osu.Objects.Drawables
 {
@@ -30,6 +31,8 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables
         public SkinnableDrawable CirclePiece { get; private set; }
 
         public SkinnableDrawable Arrow { get; private set; }
+
+        public OsuModHidden? Hidden;
 
         private Drawable scaleContainer;
 
@@ -57,7 +60,8 @@ namespace osu.Game.Rulesets.Osu.Objects.Drawables
                 Children = new Drawable[]
                 {
                     // no default for this; only visible in legacy skins.
-                    CirclePiece = new SkinnableDrawable(new OsuSkinComponentLookup(OsuSkinComponents.SliderTailHitCircle), _ => Empty())
+                    // CirclePiece = new SkinnableDrawable(new OsuSkinComponentLookup(OsuSkinComponents.SliderTailHitCircle), _ => Empty())
+                    CirclePiece = new SkinnableDrawable(new OsuSkinComponentLookup(OsuSkinComponents.SliderTailNumberlessHitCircle), _ => new NumberlessMainCirclePiece())
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
